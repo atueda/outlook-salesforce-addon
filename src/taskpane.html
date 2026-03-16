@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Salesforce連携</title>
+
+    <!-- Office.js -->
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- カスタムCSS -->
+    <link href="taskpane.css" rel="stylesheet" type="text/css">
+</head>
+
+<body class="ms-font-m ms-welcome ms-Fabric">
+    <header class="ms-welcome__header ms-bgColor-neutralLighter">
+        <img width="90" height="90" src="/assets/logo-filled.png" alt="Salesforce連携" title="Salesforce連携" />
+        <h1 class="ms-font-su">Salesforce連携</h1>
+    </header>
+
+    <section id="sideload-msg" class="ms-welcome__main">
+        <h2 class="ms-font-xl">アドインを読み込んでいます...</h2>
+        <div id="debug-info" style="margin-top: 20px; padding: 10px; background: #f0f0f0; border-radius: 4px;">
+            <p><strong>デバッグ情報:</strong></p>
+            <p id="office-status">Office.js の状態を確認中...</p>
+            <p id="host-info">ホスト情報を取得中...</p>
+            <p id="current-url">現在のURL: <span id="url-display">-</span></p>
+        </div>
+    </section>
+
+    <main id="app-body" class="ms-welcome__main" style="display: none;">
+        <div class="container-fluid p-3">
+            <!-- Salesforce認証セクション -->
+            <div id="auth-section" class="mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Salesforce認証</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="not-authenticated" style="display: block;">
+                            <p>Salesforceに接続するには認証が必要です。</p>
+                            <button id="login-btn" class="btn btn-primary">Salesforceにログイン</button>
+                        </div>
+                        <div id="authenticated" style="display: none;">
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i>
+                                Salesforceに接続されています
+                            </div>
+                            <button id="logout-btn" class="btn btn-outline-secondary btn-sm">ログアウト</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- メール情報表示セクション -->
+            <div id="mail-info" class="mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>メール情報</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-sm-3"><strong>件名:</strong></div>
+                            <div class="col-sm-9" id="email-subject">-</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-3"><strong>送信者:</strong></div>
+                            <div class="col-sm-9" id="email-sender">-</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-3"><strong>受信日時:</strong></div>
+                            <div class="col-sm-9" id="email-date">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salesforceオブジェクト選択セクション -->
+            <div id="salesforce-section" class="mb-4" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Salesforceオブジェクト設定</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="object-type" class="form-label">オブジェクトタイプ</label>
+                            <select class="form-select" id="object-type">
+                                <option value="">選択してください</option>
+                                <option value="Lead">リード (Lead)</option>
+                                <option value="Contact">取引先責任者 (Contact)</option>
+                                <option value="Account">取引先 (Account)</option>
+                                <option value="Opportunity">商談 (Opportunity)</option>
+                                <option value="Case">ケース (Case)</option>
+                                <option value="Task">活動 (Task)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="record-name" class="form-label">レコード名</label>
+                            <input type="text" class="form-control" id="record-name" placeholder="自動生成または手動入力">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">説明</label>
+                            <textarea class="form-control" id="description" rows="4" placeholder="メール本文がここに表示されます"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="d-grid gap-2">
+                <button id="send-to-salesforce" class="btn btn-success btn-lg" disabled>
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Salesforceに送信
+                </button>
+            </div>
+
+            <!-- ステータス表示 -->
+            <div id="status-message" class="mt-3"></div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <!-- カスタムJavaScript -->
+    <script src="taskpane.js"></script>
+</body>
+</html>

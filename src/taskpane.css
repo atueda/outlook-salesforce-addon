@@ -1,0 +1,352 @@
+/* Office Add-in カスタムスタイル */
+
+/* 基本設定 */
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fafafa;
+}
+
+/* Office Fabric UIスタイル */
+.ms-welcome {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.ms-welcome__header {
+    padding: 20px;
+    background: linear-gradient(90deg, #0078d4, #106ebe);
+    color: white;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ms-welcome__header img {
+    display: block;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.ms-welcome__header h1 {
+    margin: 10px 0 0 0;
+    font-weight: 300;
+    font-size: 24px;
+}
+
+.ms-welcome__main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Office フォント */
+.ms-font-su {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 300;
+    font-size: 28px;
+}
+
+.ms-font-xl {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 300;
+    font-size: 21px;
+}
+
+.ms-font-m {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+/* 背景色 */
+.ms-bgColor-neutralLighter {
+    background-color: #f8f8f8;
+}
+
+/* カード拡張スタイル */
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    background: linear-gradient(90deg, #f8f9fa, #e9ecef);
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* ボタンスタイル */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #0078d4, #106ebe);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #106ebe, #005a9e);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(45deg, #20c997, #17a2b8);
+}
+
+.btn-success:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* フォームスタイル */
+.form-control, .form-select {
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 10px 12px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #0078d4;
+    box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+}
+
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+/* アラートスタイル */
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.alert-success {
+    background: linear-gradient(45deg, #d4edda, #c3e6cb);
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-danger {
+    background: linear-gradient(45deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-info {
+    background: linear-gradient(45deg, #d1ecf1, #bee5eb);
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+.alert-warning {
+    background: linear-gradient(45deg, #fff3cd, #ffeeba);
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+/* ローディング状態 */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 8px;
+}
+
+/* 認証セクション */
+#authenticated {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+#authenticated .alert {
+    margin: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
+/* メール情報表示 */
+#mail-info .row {
+    align-items: center;
+}
+
+#mail-info .col-sm-3 {
+    color: #6c757d;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#mail-info .col-sm-9 {
+    font-size: 14px;
+    word-break: break-word;
+}
+
+/* レスポンシブ設定 */
+@media (max-width: 576px) {
+    .ms-welcome__header {
+        padding: 15px;
+    }
+
+    .ms-welcome__header h1 {
+        font-size: 20px;
+    }
+
+    .ms-welcome__main {
+        padding: 15px;
+    }
+
+    #authenticated {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #mail-info .row {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    #mail-info .col-sm-3,
+    #mail-info .col-sm-9 {
+        width: 100%;
+        padding: 0;
+    }
+
+    #mail-info .col-sm-3 {
+        margin-bottom: 5px;
+    }
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* アクセシビリティ */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    outline: 2px solid #0078d4;
+    outline-offset: 2px;
+}
+
+/* ダークテーマサポート */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1e1e1e;
+        color: #ffffff;
+    }
+
+    .card {
+        background-color: #2d2d30;
+        border: 1px solid #3e3e42;
+    }
+
+    .card-header {
+        background: linear-gradient(90deg, #2d2d30, #3e3e42);
+        border-bottom-color: #3e3e42;
+        color: #ffffff;
+    }
+
+    .form-control,
+    .form-select {
+        background-color: #3e3e42;
+        border-color: #5a5a5a;
+        color: #ffffff;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        background-color: #2d2d30;
+        border-color: #0078d4;
+        color: #ffffff;
+    }
+
+    .form-label {
+        color: #ffffff;
+    }
+
+    #mail-info .col-sm-3 {
+        color: #cccccc;
+    }
+}
+
+/* ツールチップサポート */
+[data-bs-toggle="tooltip"] {
+    cursor: help;
+}
+
+/* プログレスバー */
+.progress {
+    height: 4px;
+    border-radius: 2px;
+    background-color: rgba(0, 120, 212, 0.1);
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #0078d4, #106ebe);
+    border-radius: 2px;
+}

@@ -1,0 +1,58 @@
+{
+  "name": "outlook-salesforce-addon",
+  "version": "1.0.0",
+  "description": "Web版Outlook.comのプラグイン - メール内容をSalesforceオブジェクトに反映",
+  "main": "src/taskpane.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "webpack --mode=production",
+    "build-dev": "webpack --mode=development",
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix",
+    "serve": "webpack serve --mode=development",
+    "validate": "office-addin-manifest validate manifest/manifest.xml"
+  },
+  "keywords": [
+    "outlook",
+    "salesforce",
+    "office-addin",
+    "crm",
+    "integration"
+  ],
+  "author": "Your Company",
+  "license": "MIT",
+  "dependencies": {
+    "canvas": "^3.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/office-js": "^1.0.364",
+    "copy-webpack-plugin": "^14.0.0",
+    "css-loader": "^6.8.1",
+    "eslint": "^8.47.0",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.5.3",
+    "nodemon": "^3.0.1",
+    "office-addin-dev-certs": "^1.11.3",
+    "office-addin-manifest": "^1.12.3",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/outlook-salesforce-addon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/outlook-salesforce-addon/issues"
+  },
+  "homepage": "https://github.com/yourusername/outlook-salesforce-addon#readme"
+}
