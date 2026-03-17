@@ -459,43 +459,90 @@ function authenticateWithSalesforce() {
         .then(response => response.json())
         .then(config => {
             const clientId = config.client_id;
-            const redirectUri = encodeURIComponent('https://localhost:3000/callback');
+            const redirectUri = encodeURIComponent('http://localhost:3001/callback');
             const authUrl = `https://login.salesforce.com/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=api`;
 
             console.log('Opening auth window:', authUrl);
 
-            // 新しいウィンドウで認証ページを開く
-            const authWindow = window.open(authUrl, 'salesforce-auth', 'width=500,height=600');
+            // 新しいウィンドウで認証ページを開く（より大きなサイズで開く）
+            const authWindow = window.open(authUrl, 'salesforce-auth', 'width=800,height=700,scrollbars=yes,resizable=yes,status=yes,toolbar=no,menubar=no');
 
-            // 認証完了を待機（より頻繁にチェック）
+            if (!authWindow) {
+                showStatusMessage('ポップアップがブロックされました。ブラウザの設定を確認してください。', 'error');
+                return;
+            }
+
+            // デバッグ用：生成されたURLをコンソールに表示
+            console.log('Generated OAuth URL:', authUrl);
+
+            // 認証完了を待機
+            let checkCount = 0;
+            const maxChecks = 600; // 5分間（500ms × 600回）
+
             const checkClosed = setInterval(() => {
+                checkCount++;
+
                 try {
+                    // ウィンドウが閉じられたかチェック
                     if (authWindow.closed) {
-                        console.log('Auth window closed, checking for tokens...');
+                        console.log(`Auth window closed after ${checkCount * 0.5} seconds, checking for tokens...`);
                         clearInterval(checkClosed);
 
-                        // 少し遅延してから認証状態をチェック
-                        setTimeout(() => {
-                            console.log('Delayed authentication check starting...');
-                            checkAuthenticationStatus();
-                        }, 500);
+                        // 複数回認証状態をチェック（トークンが保存されるまで時間がかかる場合がある）
+                        let authCheckCount = 0;
+                        const authCheckInterval = setInterval(() => {
+                            authCheckCount++;
+                            console.log(`Authentication check attempt ${authCheckCount}...`);
+
+                            const accessToken = localStorage.getItem('salesforce_access_token');
+                            const instanceUrl = localStorage.getItem('salesforce_instance_url');
+
+                            if (accessToken && instanceUrl) {
+                                console.log('✅ Tokens found on attempt', authCheckCount);
+                                clearInterval(authCheckInterval);
+                                showAuthenticatedState();
+                            } else if (authCheckCount >= 10) {
+                                console.log('❌ No tokens found after 10 attempts');
+                                clearInterval(authCheckInterval);
+                                showStatusMessage('認証が完了していません。再度お試しください。', 'warning');
+                            }
+                        }, 1000);
+                        return;
                     }
+
+                    // URLが変更されたかチェック（認証完了の検出）
+                    try {
+                        const currentUrl = authWindow.location.href;
+                        if (currentUrl && currentUrl.includes('localhost:3001/callback')) {
+                            console.log('✅ Callback URL detected, authentication may be complete');
+                        }
+                    } catch (error) {
+                        // Cross-origin エラーは無視（正常な動作）
+                    }
+
                 } catch (error) {
                     console.error('Error checking auth window:', error);
                     clearInterval(checkClosed);
                     showStatusMessage('認証ウィンドウの監視でエラーが発生しました', 'error');
                 }
-            }, 500); // より頻繁にチェック
 
-            // タイムアウト処理を追加
-            setTimeout(() => {
-                if (!authWindow.closed) {
+                // タイムアウトチェック
+                if (checkCount >= maxChecks) {
                     console.log('Auth window timeout, closing...');
                     clearInterval(checkClosed);
-                    authWindow.close();
+                    if (!authWindow.closed) {
+                        authWindow.close();
+                    }
                     showStatusMessage('認証がタイムアウトしました。再試行してください。', 'warning');
                 }
-            }, 300000); // 5分でタイムアウト
+            }, 500);
+
+            // ウィンドウフォーカス維持の試行
+            try {
+                authWindow.focus();
+            } catch (error) {
+                console.log('Could not focus auth window:', error.message);
+            }
         })
         .catch(error => {
             console.error('設定の取得に失敗:', error);
@@ -600,28 +647,39 @@ async function sendToSalesforce() {
         // Salesforce オブジェクトのデータを準備
         const recordData = buildRecordData(objectType, recordName, description);
 
-        // Salesforce REST API を使用してレコードを作成
-        const response = await fetch(`${instanceUrl}/services/data/v57.0/sobjects/${objectType}/`, {
+        console.log('[送信] サーバー経由でSalesforceにレコードを作成中...');
+        console.log('[送信] オブジェクトタイプ:', objectType);
+        console.log('[送信] レコードデータ:', recordData);
+
+        // サーバー経由でSalesforceにリクエストを送信（CORSエラー回避）
+        const response = await fetch(`/api/salesforce/${objectType}`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(recordData)
+            body: JSON.stringify({
+                recordData: recordData,
+                accessToken: accessToken,
+                instanceUrl: instanceUrl
+            })
         });
+
+        console.log('[送信] サーバーレスポンス:', response.status, response.statusText);
 
         if (response.ok) {
             const result = await response.json();
+            console.log('[送信] レコード作成成功:', result);
             showStatusMessage(`正常に作成されました！ ID: ${result.id}`, 'success');
 
             // 成功後にフィールドをリセット（オプション）
             // resetForm();
         } else {
             const errorData = await response.json();
-            throw new Error(errorData.message || 'Salesforceへの送信に失敗しました');
+            console.error('[送信] サーバーエラー:', errorData);
+            throw new Error(errorData.error || 'Salesforceへの送信に失敗しました');
         }
     } catch (error) {
-        console.error('Error sending to Salesforce:', error);
+        console.error('[送信] 全体エラー:', error);
         showStatusMessage(`エラー: ${error.message}`, 'error');
     }
 }

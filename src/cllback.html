@@ -49,10 +49,28 @@
         const error = urlParams.get('error');
 
         if (error) {
+            const errorDescription = urlParams.get('error_description') || 'エラーの詳細情報がありません';
+            console.error('OAuth Error Details:', {
+                error: error,
+                error_description: errorDescription,
+                full_url: window.location.href
+            });
+
             document.querySelector('.container').innerHTML = `
                 <h3>認証エラー</h3>
-                <p>認証に失敗しました: ${error}</p>
+                <p><strong>エラー:</strong> ${error}</p>
+                <p><strong>詳細:</strong> ${decodeURIComponent(errorDescription)}</p>
                 <p>このウィンドウを閉じて再試行してください。</p>
+                <details>
+                    <summary>デバッグ情報</summary>
+                    <pre>${JSON.stringify({
+                        error: error,
+                        error_description: errorDescription,
+                        client_id: '${process.env.SALESFORCE_CLIENT_ID || "設定なし"}',
+                        redirect_uri: window.location.origin + '/callback',
+                        current_url: window.location.href
+                    }, null, 2)}</pre>
+                </details>
             `;
         } else if (code) {
             // 認証コードをアクセストークンに交換
@@ -107,13 +125,14 @@
                     document.querySelector('.container').innerHTML = `
                         <h3>✅ 認証成功！</h3>
                         <p>Salesforceに正常に接続されました。</p>
-                        <p>このウィンドウは3秒後に閉じられます。</p>
+                        <p>このウィンドウは5秒後に閉じられます。</p>
                     `;
 
-                    // 3秒後にウィンドウを閉じる
+                    // 5秒後にウィンドウを閉じる（余裕を持った時間）
                     setTimeout(() => {
+                        console.log('Closing auth window after success');
                         window.close();
-                    }, 3000);
+                    }, 5000);
                 } else {
                     console.error('Server response:', result);
                     throw new Error(result.error || 'サーバーからエラーが返されました');
